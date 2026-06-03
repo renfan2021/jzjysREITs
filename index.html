@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>jzjysREITs</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="side-rail">
+        <div class="brand-block">
+          <p class="eyebrow">REITs Desk</p>
+          <h1>交易室<br />REITs 看板</h1>
+        </div>
+        <nav class="board-nav" aria-label="看板导航">
+          <button class="nav-item is-active" data-view="overview" type="button">市场总览</button>
+          <button class="nav-item" data-view="signals" type="button">机会风险</button>
+          <button class="nav-item" data-view="sectors" type="button">板块模块</button>
+          <button class="nav-item" data-view="performance" type="button">涨跌表现</button>
+          <button class="nav-item" data-view="valuation" type="button">估值比价</button>
+          <button class="nav-item" data-view="fundamental" type="button">基本面业绩</button>
+          <button class="nav-item" data-view="profile" type="button">单券画像</button>
+          <button class="nav-item" data-view="compare" type="button">组合对比</button>
+        </nav>
+      </aside>
+
+      <main class="main-stage">
+        <header class="top-panel">
+          <div>
+            <p class="section-label">全局标的池</p>
+            <h2 id="boardTitle">市场总览</h2>
+          </div>
+          <div class="selection-panel">
+            <label>
+              搜索 REITs
+              <input id="reitSearch" type="search" placeholder="输入代码或名称" />
+            </label>
+            <label>
+              资产类型
+              <select id="assetFilter"></select>
+            </label>
+            <label>
+              选择标的
+              <select id="reitPicker"></select>
+            </label>
+            <button id="addReit" type="button">加入对比</button>
+            <button id="clearSelection" type="button">清空</button>
+          </div>
+        </header>
+
+        <section class="selected-strip">
+          <span>当前选择</span>
+          <div id="selectedChips" class="chips"></div>
+        </section>
+
+        <section id="overviewView" class="board-view is-active">
+          <div id="overviewKpis" class="kpi-grid"></div>
+          <div class="dashboard-grid">
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">今日重点</p>
+                  <h3>需要优先关注的交易信号</h3>
+                </div>
+              </div>
+              <div id="focusCards" class="signal-grid"></div>
+            </article>
+            <article class="panel span-2">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">市场结构</p>
+                  <h3>资产类型分布</h3>
+                </div>
+              </div>
+              <div id="assetBars" class="bars"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">交易热区</p>
+                  <h3>30 日涨跌幅</h3>
+                </div>
+              </div>
+              <div id="overviewChangeBars" class="bars"></div>
+            </article>
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">估值矩阵</p>
+                  <h3>核心指标截面</h3>
+                </div>
+              </div>
+              <div id="valuationMatrix" class="metric-table"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="signalsView" class="board-view">
+          <div class="dashboard-grid">
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">今日重点</p>
+                  <h3>机会与风险摘要</h3>
+                </div>
+              </div>
+              <div id="signalFocusCards" class="signal-grid"></div>
+            </article>
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">机会池</p>
+                  <h3>低估值、高派息、基本面改善</h3>
+                </div>
+              </div>
+              <p class="rule-note">机会分：P/NAV 分位低于 30% 加 3 分；派息率同类前 25% 加 2 分；IRR 同类前 25% 加 2 分；EBITDA 改善加 1 分；可供分配改善加 1 分；超跌且 EBITDA 未恶化加 1 分。</p>
+              <div id="opportunityPool" class="metric-table"></div>
+            </article>
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">风险池</p>
+                  <h3>估值偏贵、基本面承压、短期下跌</h3>
+                </div>
+              </div>
+              <p class="rule-note">风险分：P/NAV 分位高于 80% 加 3 分；30 日跌幅超过 8% 加 2 分；出租率下行加 1 分；EBITDA 下滑加 1 分；可供分配金额下滑加 1 分。</p>
+              <div id="riskPool" class="metric-table"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="sectorsView" class="board-view">
+          <div class="dashboard-grid">
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">板块模块</p>
+                  <h3>资产类型强弱与估值概览</h3>
+                </div>
+              </div>
+              <div id="sectorCards" class="sector-grid"></div>
+            </article>
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">板块明细</p>
+                  <h3>同类中位数与信号数量</h3>
+                </div>
+              </div>
+              <div id="sectorTable" class="metric-table"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="performanceView" class="board-view">
+          <div class="dashboard-grid">
+            <article class="panel span-2">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">短期动量</p>
+                  <h3>30 日涨跌幅 Top / Bottom</h3>
+                </div>
+              </div>
+              <div id="changeBars" class="bars split-bars"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">年度表现</p>
+                  <h3>年初以来涨跌幅</h3>
+                </div>
+              </div>
+              <div id="ytdBars" class="bars"></div>
+            </article>
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">同类比较</p>
+                  <h3>选择标的表现对比</h3>
+                </div>
+              </div>
+              <div id="selectedPerformance" class="metric-table"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="valuationView" class="board-view">
+          <div class="dashboard-grid">
+            <article class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">P/NAV</p>
+                  <h3>估值截面</h3>
+                </div>
+              </div>
+              <div id="pnavBars" class="bars"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">IRR</p>
+                  <h3>经营权类比价</h3>
+                </div>
+              </div>
+              <div id="irrBars" class="bars"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">派息率</p>
+                  <h3>产权类比价</h3>
+                </div>
+              </div>
+              <div id="dividendBars" class="bars"></div>
+            </article>
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">估值对比</p>
+                  <h3>选择标的估值表</h3>
+                </div>
+              </div>
+              <div id="selectedValuation" class="metric-table"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="fundamentalView" class="board-view">
+          <div id="fundamentalGrid" class="dashboard-grid"></div>
+        </section>
+
+        <section id="profileView" class="board-view">
+          <div class="profile-grid">
+            <article class="panel span-3 quick-profile">
+              <div>
+                <p class="section-label">代码直达</p>
+                <h3>输入 REITs 代码，直接打开单券全部信息</h3>
+              </div>
+              <form id="profileCodeForm" class="code-jump">
+                <input id="profileCodeInput" type="search" placeholder="例如 508029.SH / 180101.SZ" />
+                <button type="submit">打开画像</button>
+              </form>
+              <p id="profileCodeHint" class="form-hint">支持输入代码或名称关键字，回车即可跳转。</p>
+            </article>
+            <article class="panel profile-card">
+              <p class="section-label">单券画像</p>
+              <h3 id="profileName">请选择一只 REIT</h3>
+              <div id="profileKpis" class="profile-kpis"></div>
+            </article>
+            <article class="panel span-2">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">指标雷达</p>
+                  <h3>单券核心指标</h3>
+                </div>
+              </div>
+              <div id="profileMetrics" class="metric-table"></div>
+            </article>
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">同类排名</p>
+                  <h3>资产类型内相对位置</h3>
+                </div>
+              </div>
+              <div id="peerRankCards" class="rank-grid"></div>
+            </article>
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">历史曲线</p>
+                  <h3>估值与比价指标走势</h3>
+                </div>
+                <div class="metric-switch" id="historyMetricSwitch">
+                  <button class="is-active" data-metric="pnav" type="button">P/NAV</button>
+                  <button data-metric="irr" type="button">IRR</button>
+                  <button data-metric="dividend" type="button">派息率</button>
+                </div>
+              </div>
+              <div id="historyChart" class="history-chart"></div>
+              <div id="historyTable" class="metric-table compact"></div>
+            </article>
+            <article class="panel span-3">
+              <div class="panel-title">
+                <div>
+                  <p class="section-label">基本面趋势</p>
+                  <h3>季度经营指标走势</h3>
+                </div>
+                <div class="metric-switch" id="fundamentalMetricSwitch">
+                  <button class="is-active" data-metric="营业收入" type="button">营业收入</button>
+                  <button data-metric="EBITDA" type="button">EBITDA</button>
+                  <button data-metric="EBITDA利润率" type="button">利润率</button>
+                  <button data-metric="可供分配金额" type="button">可供分配</button>
+                  <button data-metric="期末出租率" type="button">出租率</button>
+                  <button data-metric="租金收入" type="button">租金收入</button>
+                </div>
+              </div>
+              <div id="fundamentalTrendChart" class="history-chart"></div>
+              <div id="fundamentalTrendTable" class="metric-table compact"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="compareView" class="board-view">
+          <article class="panel">
+            <div class="panel-title">
+              <div>
+                <p class="section-label">组合对比</p>
+                <h3>已选择 REITs 横向比较</h3>
+              </div>
+              <button id="downloadCompare" type="button">导出对比</button>
+            </div>
+            <div id="compareTable" class="metric-table wide"></div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="assets/data.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>
